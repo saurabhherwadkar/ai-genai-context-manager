@@ -1,0 +1,70 @@
+[project]
+name = "ai-genai-context-manager"
+version = "0.1.0"
+description = "Framework-agnostic LLM context window management utility with pluggable trimming, summarization, and token counting strategies"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.12"
+authors = [
+    {name = "AI GenAI Context Manager Contributors"},
+]
+keywords = ["llm", "context-management", "token-counting", "summarization", "openai", "anthropic"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+
+dependencies = [
+    "pydantic>=2.7,<3.0",
+    "pyyaml>=6.0,<7.0",
+    "tiktoken>=0.7,<1.0",
+    "openai>=1.40,<2.0",
+    "anthropic>=0.34,<1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0,<9.0",
+    "pytest-cov>=5.0,<6.0",
+    "pytest-asyncio>=0.23,<1.0",
+    "pytest-mock>=3.14,<4.0",
+    "ruff>=0.5,<1.0",
+    "mypy>=1.10,<2.0",
+    "types-PyYAML>=6.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/context_manager"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+addopts = "--cov=context_manager --cov-report=term-missing --cov-report=html"
+
+[tool.mypy]
+strict = true
+python_version = "3.12"
+plugins = ["pydantic.mypy"]
+packages = ["context_manager"]
+mypy_path = "src"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "S", "B", "A", "COM", "C4", "PT", "RET", "SIM"]
+ignore = ["COM812", "S101"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S101", "S106"]

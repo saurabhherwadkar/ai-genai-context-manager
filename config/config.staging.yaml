@@ -1,0 +1,45 @@
+# Staging environment configuration
+# Mirrors production settings with increased logging for debugging
+
+environment: staging
+
+# LLM provider connection settings
+provider:
+  name: openai
+  model: gpt-4o
+  max_context_tokens: 128000
+  reserved_response_tokens: 4096
+  timeout_seconds: 45
+  max_retries: 3
+
+# Token counting configuration
+token_counting:
+  strategy: tiktoken
+  encoding: cl100k_base
+  estimator_ratio: 4.0
+
+# Message trimming configuration
+trimming:
+  strategy: priority
+  window_size: 40
+  preserve_system_message: true
+
+# Summarization configuration
+summarization:
+  enabled: true
+  provider: openai
+  model: gpt-4o-mini
+  max_summary_tokens: 400
+  prompt_template: "Summarize the following conversation concisely, preserving key context and decisions:\n\n{messages}"
+
+# Logging configuration
+logging:
+  level: INFO
+  format: structured
+  file: null
+
+# Security and validation settings
+security:
+  max_message_length: 100000
+  max_messages: 500
+  sanitize_input: true

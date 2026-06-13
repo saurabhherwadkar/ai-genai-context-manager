@@ -1,0 +1,68 @@
+# Development environment configuration
+# This file contains all environment-specific settings for local development
+
+environment: dev
+
+# LLM provider connection settings
+provider:
+  # Provider to use: "openai" or "anthropic"
+  name: openai
+  # Model for completions and summarization
+  model: gpt-4o
+  # Maximum context window size in tokens
+  max_context_tokens: 128000
+  # Tokens reserved for response generation
+  reserved_response_tokens: 4096
+  # HTTP timeout in seconds
+  timeout_seconds: 30
+  # Max retries on transient failures
+  max_retries: 3
+
+# Token counting configuration
+token_counting:
+  # Strategy: "tiktoken" (local), "api" (remote), "estimator" (fallback)
+  strategy: tiktoken
+  # Tiktoken encoding name (cl100k_base for GPT-4 family)
+  encoding: cl100k_base
+  # Characters per token for estimator fallback
+  estimator_ratio: 4.0
+
+# Message trimming configuration
+trimming:
+  # Strategy: "fifo", "sliding_window", or "priority"
+  strategy: sliding_window
+  # Messages to keep in sliding window mode
+  window_size: 50
+  # Always preserve the system message from trimming
+  preserve_system_message: true
+
+# Summarization configuration
+summarization:
+  # Enable summarization (false = trimming only)
+  enabled: true
+  # Provider for summarization calls
+  provider: openai
+  # Model for generating summaries (smaller model for cost efficiency)
+  model: gpt-4o-mini
+  # Max tokens for summary output
+  max_summary_tokens: 500
+  # Prompt template ({messages} is replaced with conversation text)
+  prompt_template: "Summarize the following conversation concisely, preserving key context and decisions:\n\n{messages}"
+
+# Logging configuration
+logging:
+  # Level: DEBUG, INFO, WARNING, ERROR, CRITICAL
+  level: DEBUG
+  # Format: "structured" (JSON) or "human" (readable)
+  format: human
+  # File path for log output (null = stderr only)
+  file: null
+
+# Security and validation settings
+security:
+  # Maximum character length for any single message
+  max_message_length: 100000
+  # Maximum messages allowed in a conversation
+  max_messages: 1000
+  # Strip control characters from message content
+  sanitize_input: true
