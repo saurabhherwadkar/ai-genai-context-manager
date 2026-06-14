@@ -224,6 +224,40 @@ The system uses a **Protocol-based strategy pattern** for extensibility:
 
 The `ContextManager` orchestrates these strategies via dependency injection. The `factory.py` module provides config-driven convenience constructors.
 
+### End-to-End Flow
+
+```mermaid
+flowchart TD
+    A[Client Code] -->|create_from_config / create_from_env| B[Factory]
+    B -->|load & validate| C[YAML Config]
+    B -->|resolve| D[Token Counter]
+    B -->|resolve| E[Trimming Strategy]
+    B -->|resolve| F[Summarization Strategy]
+    B -->|inject dependencies| G[ContextManager]
+
+    A -->|add_message| G
+    G --> H{Validate Message}
+    H -->|fail| I[ValidationError]
+    H -->|pass| J[Count Tokens]
+    J --> K{Single message > budget?}
+    K -->|yes| L[TokenBudgetExceededError]
+    K -->|no| M[Append to State]
+    M --> N{Over budget?}
+    N -->|no| O[Return State]
+    N -->|yes| P[Manage Context]
+
+    P --> Q{Summarization enabled?}
+    Q -->|yes| R[Summarize older messages]
+    R --> S{Still over budget?}
+    S -->|yes| T[Trim messages]
+    S -->|no| O
+    Q -->|no| T
+    T --> O
+
+    A -->|get_context_window| G
+    G --> U[Return trimmed message list]
+```
+
 ## Security
 
 - API keys are read exclusively from environment variables
